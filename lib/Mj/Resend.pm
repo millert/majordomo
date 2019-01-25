@@ -747,13 +747,15 @@ sub _post {
     $dup = {};
     if ($self->_global_config_get('dup_lifetime') and !$sl) {
       my (%seen, @tmp, $msgid);
-      chomp($msgid = $head->get('Message-ID') || '(none)');
+      chomp($msgid = $head->get('Message-ID') || '');
 
       # update the global duplicate databases, obtaining previous data
       # for this message-id and checksum.  
-      $i = $self->{'lists'}{'GLOBAL'}->check_dup($msgid, 'id', $list);
-      if ($i and exists $i->{'lists'} and $msgid ne '(none)') {
-        @tmp = split ("\002", $i->{'lists'});
+      if ($msgid) {
+	$i = $self->{'lists'}{'GLOBAL'}->check_dup($msgid, 'id', $list);
+	if ($i and exists $i->{'lists'}) {
+	  @tmp = split ("\002", $i->{'lists'});
+	}
       }
 
       $i = $self->{'lists'}{'GLOBAL'}->check_dup($avars{'checksum'}, 'sum', $list);
@@ -1379,8 +1381,8 @@ sub _r_ck_header {
 
   if ($part eq 'toplevel') {
     # Check for duplicate message ID
-    chomp($id = $head->get('Message-ID') || '(none)');
-    if ($data = $self->{'lists'}{$list}->check_dup($id, 'id')) {
+    chomp($id = $head->get('Message-ID') || '');
+    if ($id && ($data = $self->{'lists'}{$list}->check_dup($id, 'id'))) {
       $msg = $self->format_error('dup_msg_id', $list, 
                                  'MESSAGE_ID' => $id, 
                                  'DATE' => scalar localtime($data->{changetime}));
