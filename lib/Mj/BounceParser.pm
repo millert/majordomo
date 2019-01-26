@@ -19,6 +19,7 @@ MTAs whose bounces are parsed:
   SoftSwitch
   Netscape Mail Server's broken DSNs
   SMTP32
+  OpenSMTPD
 
 MTAs whose bounces aren't parsed:
   Mercury
@@ -132,6 +133,7 @@ sub parse {
   $ok or ($ok = parse_softswitch($ent, $data, $hints));
   $ok or ($ok = parse_smtp32    ($ent, $data, $hints));
   $ok or ($ok = parse_mms       ($ent, $data, $hints));
+  $ok or ($ok = parse_opensmtpd ($ent, $data, $hints));
 
   # XXX Remove parse_compuserve2 once it is verified that no more bounces
   # are being produced in that format.
@@ -838,6 +840,100 @@ sub parse_msn {
   $data->{$user}{'status'} = 'failure';
 
   'MSN';
+}
+
+=head2 parse_opensmtpd
+
+Attempts to parse the bounces issued by OpenSMTPD.
+
+The message is multipart, with the first part being text/plain and
+having a content-description of 'Notification'.  The bounces look like:
+
+    Hi!
+
+    This is the MAILER-DAEMON, please DO NOT REPLY to this email.
+
+    An error has occurred while attempting to deliver a message for
+    the following list of recipients:
+
+xxxx@yyyy.com: 554 5.2.2 Delivery failed: mailbox is full (quota exceeded)
+
+    Below is a copy of the original message:
+
+Warning messages due to delayed delivery look like this:
+
+    Hi!
+
+    This is the MAILER-DAEMON, please DO NOT REPLY to this email.
+
+    A message is delayed for more than 4 hours for the following
+    list of recipients:
+
+xxxx@yyyy.com: 450 4.2.1  https://support.google.com/mail/answer/6592 rh4si6651678igc.1 - gsmtp
+
+    Please note that this is only a temporary failure report.
+    The message is kept in the queue for up to 4 days.
+    You DO NOT NEED to re-send the message to these recipients.
+
+    Below is a copy of the original message:
+
+=cut
+sub parse_opensmtpd {
+  my $log  = new Log::In 50;
+  my $ent  = shift;
+  my $data = shift;
+  my ($bh, $diag, $line, $ok, $status, $user);
+  my $state = 0;
+
+  # OpenSMTPD returns only multipart bounces nested one level deep
+  return unless $ent->parts;
+  return if $ent->parts(0)->parts;
+
+  # The first non-blank line must contain the greeting.
+  return unless (defined $ent->parts(0)->bodyhandle);
+  $bh = $ent->parts(0)->bodyhandle->open('r');
+  return unless $bh;
+
+  while (defined($line = $bh->getline)) {
+    next if $line =~ /^\s*$/;
+    if ($state == 0) {
+      return unless $line =~ /^\s+Hi!\s*$/;
+      $state++;
+    } elsif ($state == 1) {
+      return unless $line =~ /^\s+This is the MAILER-DAEMON, please DO NOT REPLY to this e-?mail\.\s*$/;
+      $state++;
+    } elsif ($state == 2) {
+      if ($line =~ /^\s+An error has occurred while attempting to deliver a message for\s*$/) {
+ 	 $status = 'failure';
+      } elsif ($line =~ /^\s+A message is delayed for more than/) {
+ 	 $status = 'warning';
+      }
+      return unless defined($status);
+      $state++;
+    } elsif ($state == 3) {
+      # Last line of error/warning message
+      return unless $line =~ /^\s+.*list of recipients:\s*$/;
+      $state++;
+    } elsif ($state == 4) {
+      # At this point $line should be "address:code message"
+      last;
+    }
+  }
+  return unless $state == 4;
+
+  # Now look for the email address and the error/warning code and message.
+  return unless $line =~ /^\s*([^:]+):\s*(.*)$/;
+  $user = $1;
+  $diag = $2;
+
+  # Make sure we end with a copy of the message
+  while (defined($line = $bh->getline)) {
+    if ($line =~ /^\s*Below is a copy of the original message:/) {
+      $data->{$user}{'diag'} = $diag;
+      $data->{$user}{'status'} = $status;
+      return 'OpenSMTPD';
+    }
+  }
 }
 
 =head2 parse_postfix

@@ -1,0 +1,2 @@
+OpenSMTPD
+a1@other.domain		failure	550-5.1.1 The email account that you tried to reach does not exist.

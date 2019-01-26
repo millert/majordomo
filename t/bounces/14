@@ -1,0 +1,76 @@
+Comment: An OpenSmtpd DSN warning
+Received: from mail.example.com (mail.example.com [local])
+	by mail.example.com (OpenSMTPD) with ESMTPA id 090f1b1d
+	for <test-owner+M86625=user=example.com@example.com>;
+	Sat, 19 Jan 2019 09:22:25 -0700 (MST)
+Subject: Delivery status notification: delayed
+From: Mailer Daemon <MAILER-DAEMON@mail.example.com>
+To: test-owner+M86625=user=example.com@example.com
+Date: Sat, 19 Jan 2019 09:22:25 -0700 (MST)
+MIME-Version: 1.0
+Content-Type: multipart/mixed;boundary="15835550769754863460/mail.example.com"
+Message-ID: <0466e77a17912d2e@mail.example.com>
+
+This is a MIME-encapsulated message.
+
+--15835550769754863460/mail.example.com
+Content-Description: Notification
+Content-Type: text/plain; charset=us-ascii
+
+    Hi!
+
+    This is the MAILER-DAEMON, please DO NOT REPLY to this email.
+
+    A message is delayed for more than 4 hours for the following
+    list of recipients:
+
+user@example.com: Network error on destination MXs
+
+    Please note that this is only a temporary failure report.
+    The message is kept in the queue for up to 7 days.
+    You DO NOT NEED to re-send the message to these recipients.
+
+    Below is a copy of the original message:
+
+--15835550769754863460/mail.example.com
+Content-Description: Delivery Report
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; mail.example.com
+
+Final-Recipient: rfc822; user@example.com
+Action: delayed
+Status: 4.0.0
+
+--15835550769754863460/mail.example.com
+Content-Description: Message headers
+Content-Type: text/rfc822-headers
+
+Received: from example.com (localhost [127.0.0.1])
+	by mail.example.com (OpenSMTPD) with ESMTP id 32e2258a
+	for <user@example.com>;
+	Sat, 19 Jan 2019 06:35:42 -0700 (MST)
+Received: from mail-qk1-f196.google.com (mail-qk1-f196.google.com [209.85.222.196])
+	by mail.example.com (OpenSMTPD) with ESMTPS id e6ea83cc (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO)
+	for <test@example.com>;
+	Sat, 19 Jan 2019 06:35:41 -0700 (MST)
+Received: by mail-qk1-f196.google.com with SMTP id 189so9635396qkj.8
+        for <test@example.com>; Sat, 19 Jan 2019 05:35:41 -0800 (PST)
+Message-ID: <1547904938.20294.217.camel@example.com>
+Subject: Re: your mail
+From: <u1@other.domain>
+To: <u2@there.com>
+Cc: test@example.com
+Date: Sat, 19 Jan 2019 08:35:38 -0500
+In-Reply-To: <162d88c19519637a8fc16474@there.com>
+References: <162d88c19519637a8fc16474@there.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: test-owner@example.com
+
+On Fri, 2019-01-18 at 21:44 -0500, Some User wrote:
+
+Blah blah blah ...
+
+--15835550769754863460/mail.example.com--
