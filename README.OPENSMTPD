@@ -1,0 +1,98 @@
+Information for OpenSMTPD users
+
+Overview
+--------
+
+Majordomo2 can generate the necessary OpenSMTPD aliases required to run a
+list by itself.  It can also maintain alias files for each domain run at
+your site for use with virtual domains.  It will not, however, modify your
+master alias file, nor will it make the necessary changes to your smtpd.conf
+file to enable the additional alias and virtual tables required.
+
+When Makefile.PL is run, you will be prompted for what MTA you are running
+and (assuming it's OpenSMTPD) whether or not you want Majordomo to maintain
+the alias (or virtual) files for you.
+
+If you don't want Mj2 maintaining the files itself then it will simply
+suggest aliases and do nothing to collect them.  Otherwise they will be
+accumulated in a directory called 'ALIASES' in files named after the domain
+being served.
+
+Note that you can use the generated alias files as guides; they are perfectly
+useful as cut-and-paste material even if you do not make the necessary
+smtpd.conf changes to use them directly.
+
+Makefile.PL Questions Explained
+-------------------------------
+
+* Should Majordomo maintain your aliases automatically?
+
+Answering 'no' will cause Mj2 to suggest aliases but not do anything with
+them.  You will be responsible for pasting these aliases into the
+appropriate file and rebuilding the alias database.
+
+Answering 'yes' will cause Mj2 to accumulate the aliases in a directory
+called ALIASES under the list directory.  See 'Configuring OpenSMTPD' section
+below on how to configure smtpd.conf to use these aliases.
+
+Configuring smtpd.conf
+--------------------
+
+First locate the OpenSMTPD main configuration file.  This is usually
+/etc/mail/smtpd.conf
+
+* Adding additional alias maps
+
+In the main configuration file search for a line that looks like:
+
+alias_database = hash:/etc/aliases
+
+and add the appropriate paths to the end like so:
+
+alias_database = hash:/etc/aliases
+	hash:/path/to/lists/ALIASES/mj-alias-domain1
+	hash:/path/to/lists/ALIASES/mj-alias-domain2
+
+Substituting "/path/to/lists", "domain1" and "domain2" with the appropriate
+path to the ALIASES directory.
+
+Run OpenSMTPD's 'newaliases' command as root.
+
+Then make sure the generated alias map files are owned by the
+majordomo user and group.  If they are not (and they won't be in
+earlier postfix versions), you have to chown and chrgrp them to the
+majordomo user and group.  You will only have to do this once, as
+'newaliases' preserves the existing user for existing database files.
+
+
+* Adding virtual_maps support
+
+In the main configuration file Search for a line that looks like:
+
+virtual_maps = hash:/etc/postfix/virtual
+
+and add the appropriate paths to the end like so:
+
+virtual_maps = hash:/etc/postfix/virtual
+	hash:/path/to/lists/ALIASES/mj-vut-domain1
+	hash:/path/to/lists/ALIASES/mj-vut-domain2
+
+Substituting "/path/to/lists", "domain1" and "domain2" with the
+appropriate path to the ALIASES directory.  Don't forget to run
+'postmap' on the virtual_maps files and restart postfix.
+
+Like the alias files, you'll probably want to change the owners of the
+generated virtual map files from root to the majordomo user and group
+(though for virtual maps this is not strictly necessary).
+
+* Making postfix and majordomo interact
+
+Postfix has to be able to read the alias and virtual maps files.  So
+you should at least do "chmod o+x" on the lists/ALIASES and lists
+directories.
+
+Then make sure you changed the owner of the alias and virtual map
+database files to the majordomo user and group (the files created by
+'newaliases' and 'postmap' in the lists/ALIASES directory).  This will
+cause Postfix's local delivery agent to run the majordomo commands as
+the majordomo user, instead of the 'nobody' user.

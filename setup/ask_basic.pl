@@ -264,13 +264,14 @@ sub ask_basic {
           (-x '/usr/sbin/qmail-inject'      && 'qmail')    ||
           (-x '/usr/sbin/exim'              && 'exim')     ||
           (-x '/usr/lib/exim'               && 'exim')     ||
+          (-x '/usr/sbin/smtpd'             && 'opensmtpd')||
           # Sendmail goes last because most MTAs have some sendmail-like
           # wrapper there
           (-x '/usr/lib/sendmail'           && 'sendmail') ||
           (-x '/usr/sbin/sendmail'          && 'sendmail') ||
           'none'
          );
-  $config->{'mta'} = get_enum($msg, $def, [qw(none sendmail exim qmail postfix)]);
+  $config->{'mta'} = get_enum($msg, $def, [qw(none sendmail exim qmail postfix opensmtpd)]);
 
   if ($config->{'mta'} eq 'sendmail') {
     require "setup/mta_sendmail.pl";
@@ -287,6 +288,10 @@ sub ask_basic {
   elsif ($config->{'mta'} eq 'qmail') {
     require "setup/mta_qmail.pl";
     ask_qmail($config);
+  }
+  elsif ($config->{'mta'} eq 'opensmtpd') {
+    require "setup/mta_opensmtpd.pl";
+    ask_opensmtpd($config);
   }
 
   #---- Ask for virtual domains

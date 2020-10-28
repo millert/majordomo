@@ -25,10 +25,11 @@ use strict;
 use vars (qw(%supported));
 
 %supported = (
-	      sendmail => 'sendmail',
-	      qmail    => 'qmail',
-	      exim     => 'exim',
-	      postfix  => 'postfix',
+	      sendmail   => 'sendmail',
+	      qmail      => 'qmail',
+	      exim       => 'exim',
+	      postfix    => 'postfix',
+	      opensmtpd  => 'opensmtpd',
 	     );
 
 =head2 sendmail
@@ -118,6 +119,34 @@ sub postfix {
     if ($args{options}{maintain_vut}) {
       $args{vutfile} = "$args{topdir}/ALIASES/mj-vut-$dom"
     }
+  }
+
+  if ($args{regenerate}) {
+    return Mj::MTAConfig::Sendmail::regen_aliases(%args);
+  }
+  elsif ($args{'delete'}) {
+    return Mj::MTAConfig::Sendmail::del_alias(%args);
+  }
+  Mj::MTAConfig::Sendmail::add_alias(%args);
+}
+
+=head2 opensmtpd
+
+This is the main interface to opensmtpd configuration manipulation
+functionality.
+
+The code is very similar to that for sendmail except for the lack of
+a separate virtual users table.  OpenSMTPD uses a per-virtual domain
+aliases table instead.
+
+=cut
+sub opensmtpd {
+  my %args = @_;
+  my $log = new Log::In 150;
+  my $dom = $args{mj_domain};
+
+  if ($args{options}{maintain_config}) {
+    $args{aliasfile} = "$args{topdir}/ALIASES/mj-alias-$dom";
   }
 
   if ($args{regenerate}) {
