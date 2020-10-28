@@ -22,7 +22,7 @@ sub setup_postfix {};
 sub setup_postfix_domain {
   my($config, $dom) = @_;
 
-  require "setup/mta_sendmail.pl";
+  require "./setup/mta_sendmail.pl";
   setup_sendmail_domain($config, $dom);
 }
 

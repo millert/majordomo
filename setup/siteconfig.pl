@@ -2,11 +2,11 @@
 
 use DirHandle;
 use Data::Dumper;
-require "setup/ask_basic.pl";
-require "setup/ask_domain.pl";
-require "setup/query_util.pl";
-require "setup/install_util.pl";
-require "setup/setup_func.pl";
+require "./setup/ask_basic.pl";
+require "./setup/ask_domain.pl";
+require "./setup/query_util.pl";
+require "./setup/install_util.pl";
+require "./setup/setup_func.pl";
 use vars qw($config $lang $nosep $sepclear);
 
 $config = read_mj_config($lang);
@@ -73,23 +73,23 @@ sub ask_site_config {
   $config->{'mta'} = get_enum($msg, $def, [qw(none sendmail exim qmail postfix opensmtpd)]);
 
   if ($config->{'mta'} eq 'sendmail') {
-    require "setup/mta_sendmail.pl";
+    require "./setup/mta_sendmail.pl";
     ask_sendmail($config);
   }
   elsif ($config->{'mta'} eq 'exim') {
-    require "setup/mta_exim.pl";
+    require "./setup/mta_exim.pl";
     ask_exim($config);
   }
   elsif ($config->{'mta'} eq 'postfix') {
-    require "setup/mta_postfix.pl";
+    require "./setup/mta_postfix.pl";
     ask_postfix($config);
   }
   elsif ($config->{'mta'} eq 'qmail') {
-    require "setup/mta_qmail.pl";
+    require "./setup/mta_qmail.pl";
     ask_qmail($config);
   }
   elsif ($config->{'mta'} eq 'opensmtpd') {
-    require "setup/mta_opensmtpd.pl";
+    require "./setup/mta_opensmtpd.pl";
     ask_opensmtpd($config);
   }
 }

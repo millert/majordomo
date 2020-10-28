@@ -8,16 +8,16 @@
 
 use DirHandle;
 use Data::Dumper;
-require "setup/query_util.pl";
-require "setup/install_util.pl";
-require "setup/setup_func.pl";
+require "./setup/query_util.pl";
+require "./setup/install_util.pl";
+require "./setup/setup_func.pl";
 
 # We call mj_shell (which we make sure has the right permissions) to do the
 # dirty work; it would be possible to include the routines directly, but
 # this makes sure that everything was installed correctly.  It's better to
 # bomb here than to let a bad installation slip by.
 
-$config = eval { require ".mj_config" };
+$config = eval { require "./.mj_config" };
 die retr_msg('no_mj_config', $lang)
   unless $config;
 
@@ -25,7 +25,7 @@ $lang ||= $config->{'language'};
 
 #@dirs = (); %files = (); # Silence warning.
 # die "Can't get file index, $!"
-#   unless eval { require "files/INDEX.pl" };
+#   unless eval { require "./files/INDEX.pl" };
 
 # Pull some variables from the environment 
 $ask   = $ENV{ASK};

@@ -16,7 +16,7 @@ $::LIBDIR = '.'; $::LIBDIR = '.'; # Nasty hack until config stuff is done
 print "1..38\n";
 
 print "Load the stashed configuration\n";
-eval('$config = require ".mj_config"');
+eval('$config = require "./.mj_config"');
 $a = $config;
 undef $a;     # Quiet 'used only once' warning.
 ok(1, !$@);

@@ -8,11 +8,11 @@
 
 use DirHandle;
 use Data::Dumper;
-require "setup/ask_basic.pl";
-require "setup/ask_domain.pl";
-require "setup/query_util.pl";
-require "setup/install_util.pl";
-require "setup/setup_func.pl";
+require "./setup/ask_basic.pl";
+require "./setup/ask_domain.pl";
+require "./setup/query_util.pl";
+require "./setup/install_util.pl";
+require "./setup/setup_func.pl";
 use vars qw($config $lang $nosep $sepclear);
 my (@domains, $dom, $install, $newdomain);
 
@@ -106,7 +106,7 @@ sub mta_append {
   no strict 'refs';
   my $nhead = 0;
   my @domains = get_domains();
-  require "setup/mta_$config->{mta}.pl";
+  require "./setup/mta_$config->{mta}.pl";
 
   # First do the generalized setup
   &{"setup_$config->{mta}"}($config);

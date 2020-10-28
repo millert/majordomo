@@ -7,7 +7,7 @@ $| = 1;
 $counter = 1;
 
 # 1
-eval('$config = require ".mj_config"');
+eval('$config = require "./.mj_config"');
 $a = $config;
 undef $a;     # Quiet 'used only once' warning.
 ok(1, !$@);

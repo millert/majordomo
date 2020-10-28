@@ -3,8 +3,8 @@ use strict;
 use Getopt::Std;
 use Fcntl;
 use Data::Dumper;
-require "setup/query_util.pl";
-require "setup/setup_func.pl";
+require "./setup/query_util.pl";
+require "./setup/setup_func.pl";
 use vars qw(%opts $mjcfg);
 $|=1;
 

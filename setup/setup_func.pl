@@ -126,8 +126,8 @@ sub do_default_config {
 
   # Open the master defaults file, in lib/mj_cf_defs.pl
   # open MASTER, 'lib/mj_cf_defs.pl';
-  require 'lib/mj_cf_defs.pl';
-  require 'lib/mj_cf_data.pl';
+  require "./lib/mj_cf_defs.pl";
+  require "./lib/mj_cf_data.pl";
 
   $subs = {
 	   'addr_strict_domain_check' => $config->{domain}{$dom}{addr_strict_domain_check},
@@ -390,7 +390,7 @@ sub suggest_crontab {
 sub mta_setup {
   no strict 'refs';
   my ($df, $gid, $i, $nhead, $uid);
-  require "setup/mta_$config->{mta}.pl";
+  require "./setup/mta_$config->{mta}.pl";
 
   # First do the generalized setup
   &{"setup_$config->{mta}"}($config);
@@ -438,9 +438,9 @@ sub tempfile {
 sub read_mj_config {
   my $lang = shift;
   my $msg;
-  require 'setup/query_util.pl';
+  require "./setup/query_util.pl";
 
-  $config = eval { require ".mj_config" };
+  $config = eval { require "./.mj_config" };
 
   if (defined $config &&
       defined $config->{'install_dir'} &&

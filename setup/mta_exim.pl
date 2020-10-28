@@ -30,7 +30,7 @@ sub setup_exim_domain {
   my ($config, $dom) = @_;
   my $whereami = $config->{'domain'}{$dom}->{'whereami'};
 
-  require "setup/mta_sendmail.pl";
+  require "./setup/mta_sendmail.pl";
   setup_sendmail_domain($config, $dom);
 
   #---- Suggest routers or directors for the exim configuration file.

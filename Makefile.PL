@@ -5,9 +5,9 @@ $^W = 1;
 $|  = 1;
 use Carp;
 use Config;
-require "setup/query_util.pl";
-require "setup/ask_basic.pl";
-require "setup/setup_func.pl";
+require "./setup/query_util.pl";
+require "./setup/ask_basic.pl";
+require "./setup/setup_func.pl";
 
 BEGIN {
   require 5.00401;

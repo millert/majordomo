@@ -248,7 +248,7 @@ sub ask_basic {
     $config->{queue_mode} : 1;
   $config->{queue_mode} = get_bool($msg, $def);
   if ($config->{queue_mode}) {
-    require "setup/ask_queueing.pl";
+    require "./setup/ask_queueing.pl";
     ask_queueing($config);
   }
 
@@ -274,23 +274,23 @@ sub ask_basic {
   $config->{'mta'} = get_enum($msg, $def, [qw(none sendmail exim qmail postfix opensmtpd)]);
 
   if ($config->{'mta'} eq 'sendmail') {
-    require "setup/mta_sendmail.pl";
+    require "./setup/mta_sendmail.pl";
     ask_sendmail($config);
   }
   elsif ($config->{'mta'} eq 'exim') {
-    require "setup/mta_exim.pl";
+    require "./setup/mta_exim.pl";
     ask_exim($config);
   }
   elsif ($config->{'mta'} eq 'postfix') {
-    require "setup/mta_postfix.pl";
+    require "./setup/mta_postfix.pl";
     ask_postfix($config);
   }
   elsif ($config->{'mta'} eq 'qmail') {
-    require "setup/mta_qmail.pl";
+    require "./setup/mta_qmail.pl";
     ask_qmail($config);
   }
   elsif ($config->{'mta'} eq 'opensmtpd') {
-    require "setup/mta_opensmtpd.pl";
+    require "./setup/mta_opensmtpd.pl";
     ask_opensmtpd($config);
   }
 
@@ -300,7 +300,7 @@ sub ask_basic {
          [$Net::Config::NetConfig{'inet_domain'}] || undef;
   $config->{'domains'} = get_list($msg, $def, 1);
 
-  require "setup/ask_domain.pl";
+  require "./setup/ask_domain.pl";
   for $i (@{$config->{'domains'}}) {
     ask_domain($config, $i);
   }

@@ -17,7 +17,7 @@ sub setup_opensmtpd {};
 sub setup_opensmtpd_domain {
   my($config, $dom) = @_;
 
-  require "setup/mta_sendmail.pl";
+  require "./setup/mta_sendmail.pl";
   setup_sendmail_domain($config, $dom);
 }
 

@@ -2,7 +2,7 @@ $^W = 1;
 use Config;
 use Fcntl qw(:flock :DEFAULT);
 use File::Copy;
-$config = eval {require ".mj_config"};
+$config = eval {require "./.mj_config"};
 die "Invalid .mj_config" unless $config;
 
 my $uid = getpwnam($config->{'uid'});
